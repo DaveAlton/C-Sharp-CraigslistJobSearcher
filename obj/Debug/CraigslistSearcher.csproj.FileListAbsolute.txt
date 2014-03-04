@@ -1,0 +1,4 @@
+H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.pdb

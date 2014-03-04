@@ -1,0 +1,12 @@
+\\psf\Home\Desktop\oldDailyDocs\DailyDocs\_SSD19\webappsec\newDay2\breakin\obj\Debug\delleme.exe
+\\psf\Home\Desktop\oldDailyDocs\DailyDocs\_SSD19\webappsec\newDay2\breakin\obj\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\breakin\obj\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\breakin\obj\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\breakin\bin\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\breakin\bin\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\breakin\obj\Debug\BreakIn.csprojResolveAssemblyReference.cache
+H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.exe
+H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.pdb
+H:\WebApplicationSecurity\day2\craigslist\obj\Debug\BreakIn.csprojResolveAssemblyReference.cache
