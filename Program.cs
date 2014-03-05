@@ -59,7 +59,7 @@ namespace CraigslistSearcher
                                 }
                                 if (job.isApplicableJob)
                                 {
-                                    //must NOT be too high in experience
+                                    //must be within 3 years of experience;
                                     for (int j = yourExperience + 3; j < 15; j++)
                                     {
                                         if (job.jobSummary.ToUpper().Contains(j + " YEARS") || job.jobSummary.ToUpper().Contains(j + "+ YEARS"))
@@ -72,6 +72,7 @@ namespace CraigslistSearcher
                                         job.urlContents = CraigslistHelper.getContents(job.url);
                                         job.hasSkill = false;
                                         int i = 0;
+                                        //Check if this job is requesting a skill you have
                                         foreach (string skill in yourSkills)
                                         {
                                             if (job.urlContents.ToUpper().Contains(skill.ToUpper()))
@@ -86,19 +87,13 @@ namespace CraigslistSearcher
                                             Console.WriteLine(job.jobTitle);
                                             Console.WriteLine("Apply? Y/N");
                                             string response = Console.ReadLine();
+                                            //ask if you want to apply to this job
                                             if (response.ToUpper() == "Y")
                                             {
                                                 CoverLetterHelper coverLetter = new CoverLetterHelper(job);
                                                 Document doc = coverLetter.Write();
                                                 Email email = new Email(job.replyEmail, "RE: " + job.jobTitle);
-                                                if (email.Send())
-                                                {
-                                                    Console.WriteLine("Email Sent");
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("Email Error");
-                                                }
+                                                email.Send();
                                                 Console.WriteLine();
                                             }
                                             else

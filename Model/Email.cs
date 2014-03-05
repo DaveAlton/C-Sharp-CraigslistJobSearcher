@@ -26,7 +26,7 @@ namespace CraigsListSearcher.Models
             Resume = "Resume.pdf";
         }
         public Email() { }
-        public bool Send()
+        public void Send()
         {
             Attachment coverLetter = new Attachment(this.CoverLetter, MediaTypeNames.Application.Octet);
             try
@@ -45,10 +45,11 @@ namespace CraigsListSearcher.Models
                 message.Attachments.Add(resume);
                 smtp.Send(message);
                 coverLetter.Dispose();
-                return true;
+                Console.WriteLine("Email Sent");
             } catch(Exception e){
                 coverLetter.Dispose();
-                return false;
+                Console.WriteLine("Email Error");
+                Console.WriteLine(e.Message);
             }
         }
     }
