@@ -2,3 +2,11 @@ H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.exe
 H:\WebApplicationSecurity\day2\craigslist\bin\Debug\delleme.pdb
 H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.exe
 H:\WebApplicationSecurity\day2\craigslist\obj\Debug\delleme.pdb
+H:\Github\C-Sharp-CraigslistJobSearcher\obj\Debug\delleme.exe
+H:\Github\C-Sharp-CraigslistJobSearcher\obj\Debug\delleme.pdb
+H:\Github\C-Sharp-CraigslistJobSearcher\bin\Debug\delleme.exe
+H:\Github\C-Sharp-CraigslistJobSearcher\bin\Debug\delleme.pdb
+H:\Github\C-Sharp-CraigslistJobSearcher\bin\Debug\itextsharp.dll
+H:\Github\C-Sharp-CraigslistJobSearcher\bin\Debug\itextsharp.pdfa.dll
+H:\Github\C-Sharp-CraigslistJobSearcher\bin\Debug\itextsharp.xtra.dll
+H:\Github\C-Sharp-CraigslistJobSearcher\obj\Debug\CraigslistSearcher.csprojResolveAssemblyReference.cache

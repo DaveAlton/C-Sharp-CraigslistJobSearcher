@@ -8,102 +8,124 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using CraigslistSearcher.Helpers;
 using CraigslistSearcher.Model;
+using System.Diagnostics;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using CraigsListSearcher.Helpers;
+using CraigsListSearcher.Models;
 
-namespace Examples.System.Net
+namespace CraigslistSearcher
 {
-    public class WebRequestPostExample
+    public class CraigslistSearcher
     {
-        private static void getJobs(string[] yourSkills, int yourExperience)
+        private static void getJobs(string[] yourSkills, int yourExperience, string[] mustHaveWords, string[] cantHaveWords)
         {
-            string[] skills = yourSkills;
-            int experience = yourExperience;
-
-            int skillsLength = skills.Length;
-            string url = "http://vancouver.en.craigslist.ca/sof/index.rss";
-            using (XmlReader reader = XmlReader.Create(url))
-            {
-                reader.MoveToContent();
-                while (reader.Read())
+            string[] developerKeywords = new string[] { "developer", "programmer" };
+            int skillsLength = yourSkills.Length;
+            string[] urls = new string[] { "http://vancouver.en.craigslist.ca/sof/", "http://vancouver.en.craigslist.ca/web/",  };
+            foreach(string url in urls){
+                using (XmlReader reader = XmlReader.Create(url+"index.rss"))
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
+                    reader.MoveToContent();
+                    while (reader.Read())
                     {
-                        Job job = new Job(skillsLength);
-                        XElement el = XNode.ReadFrom(reader) as XElement;
-                        if (el != null)
+                        if (reader.NodeType == XmlNodeType.Element)
                         {
-                            job.jobSummary = el.Value;
-                            //looking for developer or programmer jobs
-                            if (job.jobSummary.Contains("developer") || job.jobSummary.Contains("Developer") || job.jobSummary.Contains("Programmer") || job.jobSummary.Contains("programmer"))
+                            XElement el = XNode.ReadFrom(reader) as XElement;
+                            if (el != null)
                             {
-                                //must contain these keywords
-                                if (job.jobSummary.Contains("C#") || job.jobSummary.Contains("Java") || job.jobSummary.Contains("ASP.NET") || job.jobSummary.Contains("Android") || job.jobSummary.Contains("iOS") || job.jobSummary.Contains("mobile") || job.jobSummary.Contains("asp.net") || job.jobSummary.Contains(".NET") || job.jobSummary.Contains(".net") || job.jobSummary.Contains("Mobile"))
+                                Job job = new Job(skillsLength, el.Value);
+                                //looking for developer or programmer jobs
+                                foreach (string developerKeyword in developerKeywords)
                                 {
-                                    //must NOT contain these keywords
-                                    if (!job.jobSummary.Contains("UI") && !job.jobSummary.Contains("QA") && !job.jobSummary.Contains("sr.") && !job.jobSummary.Contains("Sr.") && !job.jobSummary.Contains("Senior") && !job.jobSummary.Contains("senior") && !job.jobSummary.Contains("Richmond") && !job.jobSummary.Contains("C++") && !job.jobSummary.Contains("Front-End") && !job.jobSummary.Contains("Front End") && !job.jobSummary.Contains("Victoria") && !job.jobSummary.Contains("Part-Time"))
+                                    if (job.jobSummary.ToUpper().Contains(developerKeyword.ToUpper()))
                                     {
-                                        //must NOT be too high in experience
-                                        for (int j = experience + 4; j < 15; j++)
+                                        job.isApplicableJob = true;
+                                    }
+                                }
+                                foreach (string mustHaveWord in mustHaveWords)
+                                {
+                                    if (job.jobSummary.ToUpper().Contains(mustHaveWord.ToUpper()))
+                                    {
+                                        job.isApplicableJob = true;
+                                    }
+                                }
+                                foreach (string cantHaveWord in cantHaveWords)
+                                {
+                                    if (job.jobSummary.ToUpper().Contains(cantHaveWord.ToUpper()))
+                                    {
+                                        job.isApplicableJob = false;
+                                    }
+                                }
+                                if (job.isApplicableJob)
+                                {
+                                    //must NOT be too high in experience
+                                    for (int j = yourExperience + 3; j < 15; j++)
+                                    {
+                                        if (job.jobSummary.ToUpper().Contains(j + " YEARS") || job.jobSummary.ToUpper().Contains(j + "+ YEARS"))
                                         {
-                                            if (job.jobSummary.ToUpper().Contains(j + " YEARS") || job.jobSummary.ToUpper().Contains(j + "+ YEARS"))
+                                            job.notEnoughExperience = true;
+                                        }
+                                    }
+                                    if (!job.notEnoughExperience)
+                                    {
+                                        job.urlContents = CraigslistHelper.getContents(job.url);
+                                        job.hasSkill = false;
+                                        int i = 0;
+                                        foreach (string skill in yourSkills)
+                                        {
+                                            if (job.urlContents.ToUpper().Contains(skill.ToUpper()))
                                             {
-                                                job.notEnoughExperience = true;
+                                                job.jobSkills[i] = skill;
+                                                i++;
+                                                job.hasSkill = true;
                                             }
                                         }
-                                        if (!job.notEnoughExperience)
+                                        if (job.hasSkill)
                                         {
-                                            job.url = HtmlHelper.getUrl(job.jobSummary);
-                                            string contents = HtmlHelper.getContents(job.url);
-                                            job.hasSkill = false;
-                                            int i = 0;
-                                            foreach (string skill in skills)
+                                            Console.WriteLine(job.jobTitle);
+                                            Console.WriteLine("Apply? Y/N");
+                                            string response = Console.ReadLine();
+                                            if (response.ToUpper() == "Y")
                                             {
-                                                if (contents.ToUpper().Contains(skill.ToUpper()))
+                                                CoverLetterHelper coverLetter = new CoverLetterHelper(job);
+                                                Document doc = coverLetter.Write();
+                                                Email email = new Email(job.replyEmail, "RE: " + job.jobTitle);
+                                                if (email.Send())
                                                 {
-                                                    job.jobSkills[i] = skill;
-                                                    i++;
-                                                    job.hasSkill = true;
+                                                    Console.WriteLine("Email Sent");
                                                 }
+                                                else
+                                                {
+                                                    Console.WriteLine("Email Error");
+                                                }
+                                                Console.WriteLine();
                                             }
-                                            if (job.hasSkill)
+                                            else
                                             {
-                                                job.jobTitle = HtmlHelper.getTitle(job.jobSummary);
-                                                Console.WriteLine(job.jobTitle);
-                                                foreach (string jobSkill in job.jobSkills)
-                                                {
-                                                    if (jobSkill != null)
-                                                    {
-                                                        Console.WriteLine(jobSkill);
-                                                    }
-                                                }
-                                                string replyCode = HtmlHelper.getReply(contents, "reply/", "reply");
-                                                string replyUrl = "http://vancouver.en.craigslist.ca/reply/" + replyCode;
-                                                string replyContents = HtmlHelper.getContents(replyUrl);
-                                                if (replyContents != "")
-                                                {
-                                                    string email = HtmlHelper.getSection(replyContents, "mailto:", "craigslist.org") + "craigslist.org";
-                                                    job.replyEmail = email.Replace("%40", "@");
-                                                    Console.WriteLine(job.replyEmail);
-                                                }
+                                                Console.WriteLine();
                                             }
                                         }
                                     }
-                                    
                                 }
                             }
                         }
                     }
                 }
             }
-            Console.WriteLine();
-            Console.WriteLine("PROGRAM FINISHED");
-            Console.ReadLine();
         }
         public static void Main()
         {
-            string[] skills = new string[] { "C#", "ASP.NET", ".NET", "PHP", "OBJECTIVE-C", "MYSQL", "JAVA", "JS", "JavaScript", "jQuery", "CSS", "HTML", "AJAX", "JSON", "Android", "SQL Server" };
-            const int EXPERIENCE = 0;
+            string[] skills = new string[] { "ADO.NET", "LINQ", "C#", "ASP.NET", ".NET", "PHP", "Objective-C", "MySQL", "Java", "JavaScript", "jQuery", "CSS", "HTML", "AJAX", "JSON", "Android", "SQL Server" };
+            //the post must contain one of these words:
+            string[] mustHaveWords = new string[] { "C#", "Java", "ASP.NET", "Android", "iOS", "mobile", ".NET", "Mobile" };
+            //the post can't contain any of these words:
+            string[] cantHaveWords = new string[] { "UI ", "QA", "Sr.", "Senior", "Richmond", "C++", "Front-End", "Front End", "Victoria", "Part-Time", "Perl", "Opportunity", "SalesForce", "Drupal", "Design", "Volunteer", "Manager", "Chinese", "Pure C", "Legacy C"};
+            //my work experience in years:
+            const int EXPERIENCE = 1;
 
-            getJobs(skills, EXPERIENCE);
+            getJobs(skills, EXPERIENCE, mustHaveWords, cantHaveWords);
+            Console.ReadLine();
         }
     }
 }
