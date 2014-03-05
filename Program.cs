@@ -69,13 +69,13 @@ namespace CraigslistSearcher
                                     }
                                     if (!job.notEnoughExperience)
                                     {
-                                        job.urlContents = CraigslistHelper.getContents(job.url);
+                                        job.htmlContents = CraigslistHelper.getContents(job.url);
                                         job.hasSkill = false;
                                         int i = 0;
                                         //Check if this job is requesting a skill you have
                                         foreach (string skill in yourSkills)
                                         {
-                                            if (job.urlContents.ToUpper().Contains(skill.ToUpper()))
+                                            if (job.htmlContents.ToUpper().Contains(skill.ToUpper()))
                                             {
                                                 job.jobSkills[i] = skill;
                                                 i++;
@@ -111,11 +111,11 @@ namespace CraigslistSearcher
         }
         public static void Main()
         {
-            string[] skills = new string[] { "ADO.NET", "LINQ", "C#", "ASP.NET", ".NET", "PHP", "Objective-C", "MySQL", "Java", "JavaScript", "jQuery", "CSS", "HTML", "AJAX", "JSON", "Android", "SQL Server" };
+            string[] skills = new string[] { "Angular", "Restful APIs", "SVN", "GIT", "MVC", "ADO.NET", "LINQ", "C#", "ASP.NET", ".NET", "PHP", "Objective-C", "MySQL", "Java", "JavaScript", "jQuery", "CSS", "HTML", "AJAX", "JSON", "Android", "SQL Server" };
             //the post must contain one of these words:
-            string[] mustHaveWords = new string[] { "C#", "Java", "ASP.NET", "Android", "iOS", "mobile", ".NET", "Mobile" };
+            string[] mustHaveWords = new string[] { "C#", "Java ", "ASP.NET", "Android", "iOS", "mobile", ".NET", "Mobile" };
             //the post can't contain any of these words:
-            string[] cantHaveWords = new string[] { "UI ", "QA", "Sr.", "Senior", "Richmond", "C++", "Front-End", "Front End", "Victoria", "Part-Time", "Perl", "Opportunity", "SalesForce", "Drupal", "Design", "Volunteer", "Manager", "Chinese", "Pure C", "Legacy C"};
+            string[] cantHaveWords = new string[] { "UI ", "QA", "Sr.", "Senior", "Richmond", "C++", "Victoria", "Part-Time", "Perl", "Opportunity", "SalesForce", "Drupal", "Design", "Volunteer", "Manager", "Chinese", "Pure C", "Legacy C"};
             //my work experience in years:
             const int EXPERIENCE = 1;
 
